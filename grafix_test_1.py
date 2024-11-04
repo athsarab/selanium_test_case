@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException, ElementNotInteractableException, NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait, Select
+
 import selenium
 import time
 
@@ -56,6 +58,112 @@ try:
     company_list = WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.XPATH, "//span[@class='info-box-number' and contains(text(), 'Test Company')]")))
     print("Company 'Test Company' added successfully")
+
+
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[@onclick='click_open(1)']"))).click()
+    print("Company form displayed")
+
+    # Ensure the form fields are visible before interacting
+    name_field = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "name")))
+    address_field = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "address")))
+    email_field = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "email")))
+
+    # Fill in the company details
+    name_field.send_keys("Test Corporate Company")
+    address_field.send_keys("123 Test Corporate Street")
+    email_field.send_keys("testCorporate@company.com")
+    print("Corporate Company details filled in")
+
+    # Select the company type from the dropdown
+    company_type_dropdown = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "c_id")) )
+    select_type = Select(company_type_dropdown)
+    select_type.select_by_visible_text("Corporate")  
+    print("type corporate commented")
+    # Submit the Company Save form
+    submit_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//form[@action='save/company_save.php']//input[@type='submit']")))
+    submit_button.click()
+    print("Corporate Company form submitted")
+
+
+
+
+
+
+
+    type_dropdown = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "sel")) )
+
+    select_type = Select(type_dropdown)
+    select_type.select_by_visible_text("Corporate")  
+    print("type corporate commented")
+
+        # Click filter button
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "sel1"))).click()
+    print("filter coparate successfully")
+
+    type_dropdown = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.ID, "sel")) )
+
+    select_type = Select(type_dropdown)
+    select_type.select_by_visible_text("Retail")  
+    print("type Retail commented")
+
+        # Click filter button
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "sel1"))).click()
+    print("filter Retail successfully")
+
+    # select lastes company in the list
+    # Wait until all elements matching the criteria are loaded
+    elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(text(), 'Test Company')]")))
+
+    # Click the last element in the list
+    if elements:
+        elements[-1].click()
+        print("Last occurrence of 'Test Company' selected successfully")
+    else:
+        print("No element with text 'Test Company' found.")
+
+    wait = WebDriverWait(driver, 10)
+    button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Add New Location')]")))
+
+    # Click the button
+    button.click()   
+    print("Add New Location botton click successfully")
+
+    # Wait for "Add New Location" form to appear and fill in the details
+    location_name = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "com_name")))
+    location_name.send_keys("New Location testing")
+    print("Location name entered")
+
+    location_address = driver.find_element(By.ID, "com_add")
+    location_address.send_keys("123 Location Street")
+    print("Location address entered")
+
+    # Locate the visible part of the Select2 dropdown and click it to open
+    select2_dropdown = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//span[@class='select2-selection select2-selection--single']"))
+    )
+    select2_dropdown.click()
+
+    # Wait for the dropdown options to appear, then select "Branch" by text
+    branch_option = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//li[contains(text(), 'Branch')]"))
+    )
+    branch_option.click()
+    print("Branch option selected successfully")
+
+    # Enter email
+    location_email = driver.find_element(By.ID, "com_email")
+    location_email.send_keys("location@example.com")
+    print("Location email entered")
+
+    # Submit the form
+    location_submit = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "com_save")))
+    location_submit.click()
+    print("Location save form submitted successfully")
+
+
 
     # Wait and click the Dashboard link
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.LINK_TEXT, "DASHBOARD"))).click()
@@ -216,7 +324,7 @@ try:
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.LINK_TEXT, "PRINTING"))).click()
     print("Printing department clicked successfully.")
 
-        # Select Location from dropdown
+            # Select Location from dropdown
     type_dropdown = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "type")) )
 
@@ -228,59 +336,59 @@ try:
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "filt1"))).click()
     print("filter coparate successfully")
 
-   # Locate the table and ensure it’s loaded
-    #table = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "example1")))
+    # Load the page
+   # driver.get("http://localhost/grafix/main/pages/grafix/printing")  # Replace with the actual URL
 
-    # Find all rows within the table's tbody
-    #rows = table.find_elements(By.CSS_SELECTOR, "tbody tr")
+    # Wait until the "Complete" button is clickable and click it
+    complete_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "comp_btn")))
+    complete_button.click()
+    print("Complete button clicked successfully.")
 
-    #if rows:
-        # Select the last row
-       # last_row = rows[-1]
+    # Wait for the form fields to be visible and interactable
 
-        # Find and click the "Complete" button in the last row
-       # complete_button = last_row.find_element(By.ID, "comp_btn")
-       # complete_button.click()
-        #print("Complete button in the last row clicked successfully.")
+    # Fill in the "Height" field
+    height_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "height1"))
+    )
+    height_field.clear()
+    height_field.send_keys("5.5")
+    print("Height field filled successfully.")
 
-            # Select Location from dropdown
-      #  location_dropdown = WebDriverWait(driver, 10).until(
-       #     EC.element_to_be_clickable((By.NAME, "material_id")))
+    # Fill in the "Note" field
+    note_field = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "print_note"))
+    )
+    note_field.clear()
+    note_field.send_keys("Test note for the printing job.")
+    print("Note field filled successfully.")
 
-        #select_location = Select(location_dropdown)
-        #select_location.select_by_visible_text("FLEX 3' B/B")  
-        #print("Material 'MAT STICKER' selected successfully.")
+    # Wait until the material dropdown is clickable
+    mat_dropdown = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "mat_id"))
+    )
 
-       
+    # Select the "ONE WAY STICKER" option by its visible text
+    select_mat = Select(mat_dropdown)
+    select_mat.select_by_visible_text("ONE WAY STICKER")
+    print("Material 'ONE WAY STICKER' selected successfully.")
 
-        # Fill in the "Height" field
-        #height_field = WebDriverWait(driver, 10).until(
-         #   EC.presence_of_element_located((By.ID, "height1"))
-        #)
-        #height_field.clear()
-        #height_field.send_keys("5.5")
+    # Wait for the submit button to be clickable and submit the form
+    submit_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "print_save"))
+    )
+    submit_button.click()
+    print("Form submitted successfully.")
 
-        # Fill in the "Note" field
-        #note_field = WebDriverWait(driver, 10).until(
-         #   EC.presence_of_element_located((By.ID, "print_note"))
-        #)
-        #note_field.clear()
-        #note_field.send_keys("Test note for the printing job.")
+     # Handle the alert if it appears
+    WebDriverWait(driver, 10).until(EC.alert_is_present())
+    alert = driver.switch_to.alert
+    print("Alert text:", alert.text)
+    alert.accept()  # Accept the alert
+    print("Alert accepted successfully.")
 
-        # Submit the form
-        #submit_button = WebDriverWait(driver, 10).until(
-         #   EC.element_to_be_clickable((By.ID, "print_save"))
-        #)
-        #submit_button.click()
-        #print("Form submitted successfully.")
 
-        # Verification Step: Check for submission success message (customize as needed)
-        #WebDriverWait(driver, 10).until(
-         #   EC.alert_is_present()
-        #)
-        #alert = driver.switch_to.alert
-        #print("Alert Text:", alert.text)  # Prints the alert text if any
-        #alert.accept()  # Dismisses the alert
+
+
 
  # Wait and click the Dashboard link
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.LINK_TEXT, "DASHBOARD"))).click()
@@ -291,12 +399,32 @@ try:
     EC.element_to_be_clickable((By.ID, "type")) )
 
     select_type = Select(type_dropdown)
-    select_type.select_by_visible_text("Retail")  
-    print("type retail filter selected")
+    select_type.select_by_visible_text("Corporate")  
+    print("type Corporate after printing filter selected")
 
-        # Click filter button
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "filt2"))).click()
     print("filter coparate successfully")
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "example1")))
+
+
+        # Wait for the table to load and locate the last "View" button
+    view_buttons = WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.ID, "index_view"))
+    )
+    
+    # Click the "View" button in the last row
+    view_buttons[-1].click()
+    print("Last 'View' button clicked successfully.")
+
+
+            # Wait for the table to load and locate the last "View" button
+    view_buttons = WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.ID, "job_view"))
+    )
+
+    # Click filter button
+
 
     wait = WebDriverWait(driver, 10)
     button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Add New JOB')]")))
@@ -453,6 +581,8 @@ try:
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.LINK_TEXT, "PRINTING"))).click()
     print("Printing department clicked successfully.")
 
+    
+
  
 
 except selenium.common.exceptions.NoSuchWindowException:
@@ -469,11 +599,14 @@ except Exception as e:
     # Additional debug info (optional)
     print("Current URL:", driver.current_url)
     print("Page Source Snippet:", driver.page_source[:500])  # Print the first 500 characters of the page source
+    print(f"An error occurred: {e}")
+
 
 except TimeoutException:
-    print("Timed out waiting for the Material dropdown to become clickable.")
+    print("One or more elements were not found or not interactable. Please check the form's visibility and state.")
 except ElementNotInteractableException:
-    print("The Material dropdown is not interactable. Please ensure the form is fully loaded.")
+    print("One or more elements were not interactable. Please check if the form elements are in view or visible.")
+
 
 finally:
     # Close the browser after a short delay
